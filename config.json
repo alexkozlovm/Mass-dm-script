@@ -1,0 +1,21 @@
+{
+  "settings": {
+    "default_delay": 5,
+    "min_delay": 5,
+    "max_delay": 30,
+    "failsafe_enabled": true
+  },
+  "message_templates": {
+    "friendly": "Hey {name}! Hope you're doing well! 👋",
+    "professional": "Hello {display_name}, I hope this message finds you well.",
+    "announcement": "Hi {name}! We have an important update to share with you.",
+    "custom": "Your custom message here. Use {name}, {display_name}, or {id} as placeholders."
+  },
+  "warnings": [
+    "⚠️  Using automation tools may violate Discord's Terms of Service",
+    "⚠️  Excessive messaging can result in account restrictions or bans",
+    "⚠️  Always use reasonable delays between messages (minimum 5 seconds recommended)",
+    "⚠️  Test with a small number of users first",
+    "⚠️  Ensure you have permission to contact the users"
+  ]
+}

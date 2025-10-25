@@ -1,0 +1,10 @@
+# Discord Mass DM Sender Requirements
+
+# GUI automation
+pyautogui>=0.9.54
+
+# macOS-specific for keyboard control
+pyobjc-framework-Quartz>=10.0; sys_platform == 'darwin'
+
+# Additional dependencies for pyautogui on macOS
+pillow>=10.3.0
