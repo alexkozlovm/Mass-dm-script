@@ -37,8 +37,8 @@ A Python script for automating Discord direct messages using GUI automation on m
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/mikhailkozlov/DM-script.git
-   cd DM-script
+   git clone https://github.com/mikhailkozlov/Mass-dm-script.git
+   cd Mass-dm-script
    ```
 
 2. **Install Python dependencies:**
