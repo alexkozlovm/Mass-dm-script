@@ -326,6 +326,9 @@ Examples:
   
   # Send to maximum 10 users
   python dm_sender.py users.json "Hello!" --max 10
+  
+  # Use alternative search method if CMD+K doesn't work
+  python dm_sender.py users.json "Hello!" --search-method ctrl_k
 
 ⚠️  WARNING: This may violate Discord's Terms of Service. Use at your own risk!
         """

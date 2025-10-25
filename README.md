@@ -123,6 +123,11 @@ python dm_sender.py users.json "Hi there!" --start 50
 python dm_sender.py users.json "Test message" --max 10
 ```
 
+**Use alternative search method if CMD+K doesn't work:**
+```bash
+python dm_sender.py users.json "Hello!" --search-method ctrl_k --delay 10
+```
+
 ## JSON User Data Format
 
 Your JSON file should contain an array of user objects with the following structure:
