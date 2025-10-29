@@ -51,7 +51,7 @@ MIN_DELAY_SECONDS = 5  # Minimum delay to avoid rate limiting
 class DiscordDMSender:
     """Automates sending DMs through Discord desktop app using GUI automation."""
     
-    def __init__(self, users_file: str, message_template: str, delay: int = 5):
+    def __init__(self, users_file: str, message_template: str, delay: int = 5, search_method: str = 'auto'):
         """
         Initialize the DM sender.
         
@@ -59,10 +59,12 @@ class DiscordDMSender:
             users_file: Path to JSON file containing user data
             message_template: Message to send (can include {name} placeholder)
             delay: Delay in seconds between messages (minimum 5 recommended)
+            search_method: Method to open search ('cmd_k', 'ctrl_k', 'auto')
         """
         self.users_file = Path(users_file)
         self.message_template = message_template
         self.delay = max(delay, MIN_DELAY_SECONDS)
+        self.search_method = search_method
         self.users: List[Dict] = []
         self.sent_count = 0
         self.failed_count = 0
@@ -104,15 +106,53 @@ class DiscordDMSender:
         return message
     
     def open_discord_search(self) -> bool:
-        """Open Discord's search/quick switcher (Cmd+K)."""
-        try:
-            pyautogui.hotkey('command', 'k')
-            time.sleep(1)
-            logger.debug("Opened Discord search")
-            return True
-        except Exception as e:
-            logger.error(f"Failed to open Discord search: {e}")
-            return False
+        """
+        Open Discord's search/quick switcher using various methods.
+        Tries multiple approaches to maximize compatibility.
+        """
+        methods = []
+        
+        if self.search_method == 'cmd_k':
+            methods = [('command', 'k')]
+        elif self.search_method == 'ctrl_k':
+            methods = [('ctrl', 'k')]
+        else:  # auto - try multiple methods
+            methods = [
+                ('command', 'k'),  # Standard macOS shortcut
+                ('ctrl', 'k'),     # Alternative that works on some systems
+                ('cmd', 'k'),      # Another variation
+            ]
+        
+        for method in methods:
+            try:
+                logger.debug(f"Trying search method: {'+'.join(method)}")
+                
+                # Press the hotkey
+                if len(method) == 2:
+                    pyautogui.hotkey(method[0], method[1])
+                else:
+                    pyautogui.hotkey(*method)
+                
+                time.sleep(1.5)  # Give more time for UI to respond
+                
+                # Try typing a space and backspace to test if search opened
+                pyautogui.press('space')
+                time.sleep(0.1)
+                pyautogui.press('backspace')
+                time.sleep(0.3)
+                
+                logger.debug(f"Successfully opened Discord search using {'+'.join(method)}")
+                return True
+                
+            except Exception as e:
+                logger.debug(f"Method {'+'.join(method)} failed: {e}")
+                # Close any potentially opened dialog
+                pyautogui.press('esc')
+                time.sleep(0.3)
+                continue
+        
+        logger.error("All search methods failed. Please ensure Discord is focused.")
+        return False
     
     def search_user(self, username: str) -> bool:
         """Search for a user in Discord."""
@@ -286,6 +326,9 @@ Examples:
   
   # Send to maximum 10 users
   python dm_sender.py users.json "Hello!" --max 10
+  
+  # Use alternative search method if CMD+K doesn't work
+  python dm_sender.py users.json "Hello!" --search-method ctrl_k
 
 ⚠️  WARNING: This may violate Discord's Terms of Service. Use at your own risk!
         """
@@ -302,6 +345,9 @@ Examples:
                        help='Start from this user index (default: 0)')
     parser.add_argument('--max', type=int, default=None,
                        help='Maximum number of messages to send (default: all)')
+    parser.add_argument('--search-method', type=str, default='auto',
+                       choices=['auto', 'cmd_k', 'ctrl_k'],
+                       help='Method to open Discord search. "auto" tries multiple methods (default: auto)')
     
     args = parser.parse_args()
     
@@ -335,7 +381,7 @@ Examples:
         args.delay = MIN_DELAY_SECONDS
     
     # Create sender and run
-    sender = DiscordDMSender(args.users_file, message, args.delay)
+    sender = DiscordDMSender(args.users_file, message, args.delay, args.search_method)
     
     try:
         sender.run(start_index=args.start, max_messages=args.max)

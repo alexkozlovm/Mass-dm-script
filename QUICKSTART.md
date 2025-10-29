@@ -38,7 +38,7 @@ python dm_sender.py users_example.json --message-file message_example.txt --max 
 
 **What will happen:**
 1. Script counts down from 5 seconds
-2. Opens Discord search (Cmd+K) for each user
+2. Opens Discord search (tries multiple methods automatically)
 3. Types the username
 4. Sends the message (including all lines and formatting)
 5. Waits 5 seconds before next message
@@ -68,6 +68,10 @@ python dm_sender.py your_users.json --message-file your_message.txt --delay 10
 
 **Script can't control Discord:**
 → Check Accessibility permissions (System Preferences)
+
+**Keyboard shortcut not working:**
+→ Try: `python dm_sender.py users.json "Hi!" --search-method ctrl_k`
+→ The script tries multiple methods automatically by default
 
 **Wrong messages being sent:**
 → Make sure Discord window is focused and visible

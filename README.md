@@ -88,6 +88,7 @@ Optional:
   --delay SECONDS    Delay between messages (default: 5, minimum: 5)
   --start INDEX      Start from this user index (default: 0)
   --max COUNT        Maximum messages to send (default: all)
+  --search-method    Method to open Discord search: auto, cmd_k, or ctrl_k (default: auto)
 ```
 
 ### Examples
@@ -120,6 +121,11 @@ python dm_sender.py users.json "Hi there!" --start 50
 **Send to only 10 users (testing):**
 ```bash
 python dm_sender.py users.json "Test message" --max 10
+```
+
+**Use alternative search method if CMD+K doesn't work:**
+```bash
+python dm_sender.py users.json "Hello!" --search-method ctrl_k --delay 10
 ```
 
 ## JSON User Data Format
@@ -202,7 +208,9 @@ python dm_sender.py users.json "# Hello {name}!\n\n**Welcome!** 🎉\n\nJoin us!
 ## How It Works
 
 1. **GUI Automation:** The script uses PyAutoGUI to control your mouse and keyboard
-2. **Discord Search:** Opens Discord's quick switcher (Cmd+K) to search for users
+2. **Discord Search:** Opens Discord's quick switcher to search for users
+   - Default: Tries multiple keyboard shortcuts automatically (Cmd+K, Ctrl+K)
+   - You can specify a specific method with `--search-method` if needed
 3. **Message Sending:** Types the message and presses Enter
 4. **Rate Limiting:** Waits between messages to avoid triggering Discord's spam detection
 
@@ -256,6 +264,13 @@ Check this file if you need to troubleshoot issues.
 - Check that you granted Accessibility permissions
 - Verify Discord window is visible (not minimized)
 - Make sure your JSON file is properly formatted
+- If CMD+K shortcut doesn't work, try: `--search-method ctrl_k`
+
+**CMD+K not working:**
+- Some macOS versions or Discord settings may disable this shortcut
+- Use `--search-method auto` (default) to try multiple methods automatically
+- Or explicitly use `--search-method ctrl_k` as an alternative
+- Example: `python dm_sender.py users.json "Hi!" --search-method ctrl_k`
 
 **Messages not sending:**
 - Increase the delay with `--delay 10`
